@@ -48,7 +48,8 @@ App = {
     const todoList = await $.getJSON('TodoList.json')
     App.contracts.TodoList = TruffleContract(todoList)
     App.contracts.TodoList.setProvider(App.web3Provider)
-    
+    web3.eth.defaultAccount = web3.eth.accounts[0]   
+ 
     App.todoList = await App.contracts.TodoList.deployed()
   },
 
@@ -97,6 +98,18 @@ App = {
       $newTaskTemplate.show()
     }    
    },
+
+  createTask: async () => {
+    App.setLoading(true)
+    const content = $('#newTask').val()
+
+    try {
+    await App.todoList.createTask(content)
+    } catch (error) {
+      console.log(error)
+    }
+    window.location.reload()
+  },
 
   setLoading: (boolean) => {
     App.loading = boolean
